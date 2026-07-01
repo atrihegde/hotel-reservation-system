@@ -17,7 +17,30 @@ HOST=127.0.0.1
 ACCESS_HOST=127.0.0.1
 if [ "$REMOTE" = true ]; then
   HOST=0.0.0.0
-  ACCESS_HOST="$(hostname -I 2>/dev/null | awk '{print $1}')"
+  ACCESS_HOST="$(hostname -I 2>/dev/null | tr ' ' '\n' | awk '!/^127\./ && NF {print; exit}')"
+  if [ -z "$ACCESS_HOST" ]; then
+    if command -v python3 >/dev/null 2>&1; then
+      ACCESS_HOST="$(python3 - <<'PY'
+import socket
+for info in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET):
+    ip = info[4][0]
+    if not ip.startswith('127.'):
+        print(ip)
+        break
+PY
+2>/dev/null)"
+    elif command -v python >/dev/null 2>&1; then
+      ACCESS_HOST="$(python - <<'PY'
+import socket
+for info in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET):
+    ip = info[4][0]
+    if not ip.startswith('127.'):
+        print(ip)
+        break
+PY
+2>/dev/null)"
+    fi
+  fi
   if [ -z "$ACCESS_HOST" ]; then
     ACCESS_HOST="YOUR_SERVER_IP"
   fi
