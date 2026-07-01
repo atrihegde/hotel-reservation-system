@@ -6,7 +6,11 @@ set REMOTE=false
 if "%~1"=="--remote" set REMOTE=true
 
 set HOST=127.0.0.1
-if "%REMOTE%"=="true" set HOST=0.0.0.0
+set ACCESS_HOST=127.0.0.1
+if "%REMOTE%"=="true" (
+  set HOST=0.0.0.0
+  set ACCESS_HOST=YOUR_SERVER_IP
+)
 
 echo Stopping existing Python and Node processes...
 taskkill /F /IM python.exe /T >nul 2>&1
@@ -34,6 +38,6 @@ start "Hotel Backend" cmd /k "cd /d "%~dp0backend" && python manage.py runserver
 echo Starting frontend dev server...
 start "Hotel Frontend" cmd /k "cd /d "%~dp0frontend" && npm run dev -- --host %HOST%"
 
-echo Backend running at http://%HOST%:8000
+echo Backend running at http://%ACCESS_HOST%:8000
 
-echo Frontend running at http://localhost:5173
+echo Frontend running at http://%ACCESS_HOST%:5173

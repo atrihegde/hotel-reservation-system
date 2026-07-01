@@ -14,8 +14,13 @@ for arg in "$@"; do
 done
 
 HOST=127.0.0.1
+ACCESS_HOST=127.0.0.1
 if [ "$REMOTE" = true ]; then
   HOST=0.0.0.0
+  ACCESS_HOST="$(hostname -I 2>/dev/null | awk '{print $1}')"
+  if [ -z "$ACCESS_HOST" ]; then
+    ACCESS_HOST="YOUR_SERVER_IP"
+  fi
 fi
 
 echo "Stopping existing Python and Node processes..."
@@ -43,6 +48,6 @@ echo "Starting frontend dev server..."
 nohup npm --prefix "$SCRIPT_DIR/frontend" run dev -- --host "$HOST" > "$SCRIPT_DIR/frontend.log" 2>&1 &
 FRONTEND_PID=$!
 
-echo "Backend running at http://$HOST:8000 (PID: $BACKEND_PID)"
-echo "Frontend running at http://localhost:5173 (PID: $FRONTEND_PID)"
+echo "Backend running at http://$ACCESS_HOST:8000 (PID: $BACKEND_PID)"
+echo "Frontend running at http://$ACCESS_HOST:5173 (PID: $FRONTEND_PID)"
 echo "Logs: backend.log and frontend.log"
