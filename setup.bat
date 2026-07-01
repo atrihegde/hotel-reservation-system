@@ -2,6 +2,9 @@
 setlocal
 cd /d "%~dp0"
 
+set CREATE_SU=false
+if "%~1"=="--create-su" set CREATE_SU=true
+
 echo Stopping existing Python and Node processes...
 taskkill /F /IM python.exe /T >nul 2>&1
 taskkill /F /IM python3.exe /T >nul 2>&1
@@ -20,6 +23,11 @@ call .venv\Scripts\activate.bat
 python -m pip install --upgrade pip
 pip install -r backend\requirements.txt
 python backend\manage.py migrate
+
+if "%CREATE_SU%"=="true" (
+  echo Creating Django superuser...
+  python backend\manage.py createsuperuser
+)
 
 echo Installing frontend dependencies...
 if not exist "frontend\node_modules" (

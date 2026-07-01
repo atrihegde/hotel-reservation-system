@@ -4,6 +4,15 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
+CREATE_SU=false
+for arg in "$@"; do
+  case "$arg" in
+    --create-su)
+      CREATE_SU=true
+      ;;
+  esac
+done
+
 echo "Stopping existing Python and Node processes..."
 for pid in $(ps -eo pid=,comm= | awk '$2 ~ /^(python|python3|node|nodejs|npm)$/ {print $1}'); do
   kill -9 "$pid" 2>/dev/null || true
@@ -25,6 +34,11 @@ source .venv/bin/activate
 python -m pip install --upgrade pip
 pip install -r backend/requirements.txt
 python backend/manage.py migrate
+
+if [ "$CREATE_SU" = true ]; then
+  echo "Creating Django superuser..."
+  python backend/manage.py createsuperuser
+fi
 
 echo "Installing frontend dependencies..."
 if [ ! -d "$SCRIPT_DIR/frontend/node_modules" ]; then
