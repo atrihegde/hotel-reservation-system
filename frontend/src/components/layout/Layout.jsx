@@ -12,21 +12,21 @@ const Layout = () => {
 
   return (
     <div style={styles.container}>
-      <nav style={styles.navbar}>
+      <aside style={styles.sidebar}>
         <div style={styles.navBrand}>Hotel Reservation System</div>
-        <div style={styles.navLinks}>
+        <nav style={styles.navLinks}>
           <Link to="/" style={styles.navLink}>Dashboard</Link>
           <Link to="/rooms" style={styles.navLink}>Rooms</Link>
           <Link to="/customers" style={styles.navLink}>Customers</Link>
           <Link to="/reservations" style={styles.navLink}>Reservations</Link>
-          <span style={styles.userInfo}>
-            {user?.username}
-          </span>
+        </nav>
+        <div style={styles.userSection}>
+          <span style={styles.userInfo}>{user?.username}</span>
           <button onClick={handleLogout} style={styles.logoutButton}>
             Logout
           </button>
         </div>
-      </nav>
+      </aside>
       <main style={styles.main}>
         <Outlet />
       </main>
@@ -38,40 +38,54 @@ const styles = {
   container: {
     minHeight: '100vh',
     display: 'flex',
-    flexDirection: 'column',
+    backgroundColor: '#f4f7fb',
   },
-  navbar: {
-    backgroundColor: '#007bff',
+  sidebar: {
+    width: '260px',
+    background: 'linear-gradient(180deg, #007bff 0%, #0056b3 100%)',
     color: 'white',
-    padding: '1rem 2rem',
+    padding: '1.5rem 1rem',
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: 'column',
+    gap: '1.5rem',
   },
   navBrand: {
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
+    fontSize: '1.3rem',
+    fontWeight: '700',
+    lineHeight: 1.3,
   },
   navLinks: {
     display: 'flex',
-    alignItems: 'center',
-    gap: '1.5rem',
+    flexDirection: 'column',
+    gap: '0.75rem',
   },
   navLink: {
     color: 'white',
     textDecoration: 'none',
     fontSize: '1rem',
+    padding: '0.7rem 0.9rem',
+    borderRadius: '8px',
+    backgroundColor: 'rgba(255,255,255,0.12)',
+  },
+  userSection: {
+    marginTop: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+    paddingTop: '1rem',
+    borderTop: '1px solid rgba(255,255,255,0.2)',
   },
   userInfo: {
     color: 'white',
-    fontSize: '0.9rem',
+    fontSize: '0.95rem',
+    fontWeight: '600',
   },
   logoutButton: {
     backgroundColor: 'rgba(255,255,255,0.2)',
     color: 'white',
-    border: 'none',
-    padding: '0.5rem 1rem',
-    borderRadius: '4px',
+    border: '1px solid rgba(255,255,255,0.25)',
+    padding: '0.6rem 0.9rem',
+    borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '0.9rem',
   },
